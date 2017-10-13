@@ -1,0 +1,218 @@
+{{define "test_jscript"}}
+{{template "header" .}}
+<head>
+    <title>Javascript Playground</title>
+    <!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    -->
+    <script src={{ .Static }}jquery-3.2.1.min.js></script>
+    <script src={{ .Static }}underscore-master/underscore-min.js></script>
+    <script>
+        $(function () {
+            console.log( "DOM ready!" );
+            game.init();
+            game.x = 5;
+            game.y = 5;
+            game.draw(15,15);
+            Module1.testing();
+            Module1.getQuoteDom();
+            Module1.getTmpl();
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+
+        var game = function () {
+
+            var canvas = document.getElementById("canvas").style.border = "1px solid #000000",x = 10,y = 20;
+           // var canvas = $("canvas")[0].style.border = "1px solid #000000",x = 20,y = 30;
+           // var ctx=canvas.getContext("2d");
+           // ctx.fillStyle="#FF0000";
+           // ctx.fillRect(20,20,150,100);
+
+            var init = function () {
+                //alert(canvas.id);
+                console.log('testing game Module');
+                console.log('Canvas=>'+canvas);
+            };
+   
+            var _draw = function(x1,y1) {
+
+            console.log("Drawing line from " + this.x + "," + this.y + " to " + x1 + "," + y1)
+
+            }
+
+            return {
+                init: init,
+                draw: _draw
+            }
+        }();
+
+        // Global module
+        var Module1 = (function ( $, _, d, undefined) {
+
+            var jsonp_url = "http://al.smeuh.org/cgi-bin/webwidget_tutorial.py?callback=?";
+
+           // var container = d.createElement('div');
+           // d.body.appendChild(container);
+
+            $('<div/>').attr("id", "container").
+             text("Template Data goes here").
+             appendTo(d.body).
+             css({"border-color": "yellow", 
+             "border-weight":"1px", 
+             "border-style":"solid",
+              "height": "100px"} 
+              );
+          
+            $('<div/>').attr("id", "ajax_panel").
+             text("Ajax DIV Data goes here").
+             appendTo(d.body).
+             css({"border-color": "#C1E0FF", 
+             "border-weight":"1px", 
+             "border-style":"solid",
+              "height": "100px"} 
+              );
+         
+            $('<div/>').text("Sup, y'all?").
+            appendTo(d.body).
+            css( {"color": "green", 
+                  "height": "100px",
+                  "border-color": "red", 
+                  "border-weight":"0px", 
+                  "border-style":"solid"} ).
+            click(function() { console.log('Div text clicked')});
+
+             var testing = function() {
+                console.log('testing Module1 Module');
+                console.log(container.id);
+                return '';
+            };
+
+            var getQuoteDom = function(){
+                _getQuote();
+                console.log('Calling Jquery Append');
+            };
+
+            _getQuote = function() {
+
+             $.getJSON(jsonp_url, function(data) {
+                 $('#ajax_panel').html("This data comes from another server: " + data.html);
+               }).fail(function(jqxhr){
+                    $('#ajax_panel').html('jqxhr.responseText');
+               });  
+
+            }
+
+            _snip1 = function() {
+
+
+              var artists = ['Led Zeppelin', 'ACDC', 'Rolling Stones'],
+                artistTemplate = _.template(
+                  '<% _.each(artists, function(artist, index, artists) { %>' +
+                    '<li><%= artist %></li>' +
+                  '<% }); %>'
+                ),
+                content = artistTemplate({
+                  artists: artists
+                });
+
+               // content2 = (_.template('<p><%= text %></p>', {text: 'Pinnaman Rocks!'}));
+               // container.innerHTML = content2;
+
+                $('#container').html(content);
+
+            }
+         
+            function _privateMethod1(){
+                $("#quote").html("test");
+            }
+         
+            function _min_num(){  // private method
+              console.log( _.min([10, 5, 100, 2, 1000]) );
+            }
+
+            var getTmpl = function() {
+
+                console.log('Underscore Functions')
+                console.log(_.range(5));
+                console.log(_.flatten([[0, 1], [2, 3], [4, 5]]));
+                console.log(_min_num()); // call private function
+
+                _snip1();
+                
+            }
+         
+            return {
+
+                testing: testing,
+                getQuoteDom: getQuoteDom,
+                getTmpl: getTmpl
+    
+            };
+         
+        // Pull in jQuery and Underscore
+        })( jQuery, _, document);
+
+         // Global module
+        var Module2 = (function ( $, _, d, undefined) {
+
+           // home_url = 'http://24.61.90.224:8080';
+
+            $('<div/>').attr("id", "module2_div1")
+           .text("Module2 Div Data from Pinnaman Home")
+           .appendTo(d.body)
+           .css( {"color": "blue",
+                  "height": "100px",
+                  "border-color": "green",
+                  "border-weight":"0px",
+                  "border-style":"solid"} )
+            //.click(function() { console.log('Div text clicked')});
+
+           // get the pinnaman home page
+           //   $.getJSON(home_url, function(data) {
+           //      $('#module2_div1').html("This data comes from pi server: " + data.html);
+           //    }).fail(function(jqxhr){
+           //         $('#module2_div1').html(jqxhr.responseText);
+           //    }); 
+
+         })( jQuery, _, document);
+
+         var JQLiteGallery = (function ( $, _, d, undefined) {
+
+            $('<div/>').attr("id", "module3_div1")
+           .text("Module3 Div Data from Golang Home")
+           .appendTo(d.body)
+           .css( {"color": "blue",
+                  "height": "100px",
+                  "border-color": "purple",
+                  "border-weight":"0px",
+                  "border-style":"solid"} )
+            .click(function() { console.log('Div text clicked')});
+
+           $.fn.helloWorld = function() {
+                this.each( function() {
+                    $(this).text("Hello, World!");
+                });
+            };
+            $('module3_div1').helloWorld();
+            
+          /*  $(function() {
+              $(".any-class").jCarouselLite({
+                 btnNext: ".next",
+                 btnPrev: ".prev"
+               });
+           }); */
+
+         })( jQuery, _, document);
+
+
+    </script>
+</body>
+{{template "footer" .}}
+{{end}}

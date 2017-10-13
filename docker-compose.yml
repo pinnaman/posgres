@@ -1,0 +1,12 @@
+dbdata:
+  image: postgresql:alpine
+  volumes:
+    - /Users/apinnamaneni/srce/db/postgres/data
+  command: true
+ 
+db:
+  image: postgresql:alpine
+  volumes_from:
+    - dbdata
+  ports:
+    - "5432:5432"

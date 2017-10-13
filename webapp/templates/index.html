@@ -1,0 +1,9 @@
+<html>
+    <body>
+      <h1>Will's Blog!</h1>
+      {{range .}}
+        <a href="/{{.File}}"><h2>{{.Title}} ({{.Date}})</h2></a>
+        <p>{{.Summary}}</p>
+      {{end}}
+    </body>
+  </html>

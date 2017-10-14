@@ -19,8 +19,27 @@ const staticURL string = "/static/"
 const staticRoot string = "static/"
 const postPath string = "posts"
 
+const tmplSrc = `<table>
+<tr align="center">
+{{ range . }}
+		<td style="color: rgba(55, 248, 255, 1);">{{.Id}}</td>
+		<td style="color: rgba(200, 200, 55, 1);">{{.Created}}</td>
+{{ end }}
+</tr>
+</table>`
+
+// compile
+var tmplTab = template.Must(template.New("tmpl").Parse(tmplSrc))
+
 //Compile templates on start
-var templates = template.Must(template.ParseFiles("templates/header.html", "templates/footer.html", "templates/main.html", "templates/about.html", "templates/test_jscript.html"))
+var templates = template.Must(template.ParseFiles("templates/header.html",
+	"templates/footer.html",
+	"templates/main.html",
+	"templates/about.html",
+	"templates/test_jscript.html",
+	"templates/events.html",
+),
+)
 
 //A Page structure
 type Page struct {
@@ -129,6 +148,7 @@ func getPosts() []Post {
 
 func eventHandler(w http.ResponseWriter, r *http.Request) {
 	logRequest(r)
+
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), 405)
 		return
@@ -138,10 +158,17 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
+
+	// Pass events to template...
+	display(w, "events", &Page{Title: "Event", Static: staticRoot})
+
 	for _, evt := range evts {
-		fmt.Println(evt)
-		//fmt.Fprintf(w, "%s, %s, %s, %s, %s, %s\n", evt.Id, evt.Created, evt.Start, evt.End, evt.Title, evt.Completed)
+		//fmt.Println(evt)
+		fmt.Fprintf(w, "%s, %s, %s, %s, %s, %s\n", evt.Id, evt.Created, evt.Start, evt.End, evt.Title, evt.Completed)
 	}
+	fmt.Fprintf(w, "%s\n", "Display Table Here...")
+
+	//display(w, tmplSrc, evts)
 }
 
 func main() {
